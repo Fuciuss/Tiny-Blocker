@@ -1,0 +1,1 @@
+ Tiny Blocker, a lightweight site blocking extension for Google Chrome

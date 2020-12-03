@@ -1,0 +1,15 @@
+{
+    "name": "Tiny Blocker",
+    "version": "1.0",
+    "description": "A lightweight website blocker chrome extension",
+    "permissions": ["declarativeContent", "webRequestBlocking", "webRequest", "https://*.youtube.com/*"],
+    "page_action": {
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": ["blocker.js", "starting.js"],
+
+        "persistent": true
+    },
+    "manifest_version": 2
+}
