@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tiny Blocker - Settings</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="icon" href="tinyBlockerIcon.png" type="image/png">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .main-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .site-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        .site-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .site-url {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+        .add-site-form {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .btn-add {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 10px 30px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-remove {
+            background: #dc3545;
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .btn-remove:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+        .master-toggle {
+            background: #e8f5e9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 2px solid #4caf50;
+        }
+        .master-toggle.disabled {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+        .predefined-sites {
+            margin-bottom: 20px;
+        }
+        .quick-add-btn {
+            margin: 5px;
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            color: #1976d2;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .quick-add-btn:hover {
+            background: #2196f3;
+            color: white;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header text-center">
+            <h1>
+                <img src="tinyBlockerIcon.png" alt="Tiny Blocker" style="width: 50px; height: 50px; margin-right: 15px;">
+                Tiny Blocker Settings
+            </h1>
+            <p class="text-muted">Manage your blocked websites</p>
+        </div>
+
+        <div class="main-card">
+            <!-- Master Toggle -->
+            <div class="master-toggle" id="masterToggleContainer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">Master Block Switch</h5>
+                        <small class="text-muted">Enable or disable all website blocking</small>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="masterToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Add New Site Form -->
+            <div class="add-site-form">
+                <h5>Add Website to Block</h5>
+                <div class="form-row align-items-end">
+                    <div class="col">
+                        <label for="websiteName">Website Name</label>
+                        <input type="text" class="form-control" id="websiteName" placeholder="e.g., YouTube">
+                    </div>
+                    <div class="col">
+                        <label for="websiteUrl">Website URL Pattern</label>
+                        <input type="text" class="form-control" id="websiteUrl" placeholder="e.g., *://*.youtube.com/*">
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-add" id="addSiteBtn">Add Site</button>
+                    </div>
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    Use * as wildcard. Examples: *://*.example.com/* or https://example.com/*
+                </small>
+
+                <!-- Quick Add Popular Sites -->
+                <div class="predefined-sites mt-3">
+                    <h6>Quick Add Popular Sites:</h6>
+                    <button class="btn quick-add-btn" data-name="YouTube" data-url="*://*.youtube.com/*">YouTube</button>
+                    <button class="btn quick-add-btn" data-name="Reddit" data-url="*://*.reddit.com/*">Reddit</button>
+                    <button class="btn quick-add-btn" data-name="X (Twitter)" data-url="*://x.com/*,*://twitter.com/*">X/Twitter</button>
+                    <button class="btn quick-add-btn" data-name="LinkedIn" data-url="*://*.linkedin.com/*">LinkedIn</button>
+                    <button class="btn quick-add-btn" data-name="Facebook" data-url="*://*.facebook.com/*">Facebook</button>
+                    <button class="btn quick-add-btn" data-name="Instagram" data-url="*://*.instagram.com/*">Instagram</button>
+                    <button class="btn quick-add-btn" data-name="TikTok" data-url="*://*.tiktok.com/*">TikTok</button>
+                    <button class="btn quick-add-btn" data-name="Netflix" data-url="*://*.netflix.com/*">Netflix</button>
+                </div>
+            </div>
+
+            <!-- Blocked Sites List -->
+            <div>
+                <h5 class="mb-3">Blocked Websites</h5>
+                <div id="sitesList">
+                    <div class="empty-state">
+                        <p>No websites blocked yet.</p>
+                        <p>Add websites using the form above or quick add buttons.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+</html>

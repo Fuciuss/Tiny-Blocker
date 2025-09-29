@@ -1,10 +1,113 @@
 <!DOCTYPE html>
 <html>
-    <head></head>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body {
+                width: 350px;
+                padding: 20px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+            .container {
+                background: white;
+                border-radius: 10px;
+                padding: 20px;
+            }
+            h3 {
+                margin-top: 0;
+                color: #333;
+                font-size: 18px;
+            }
+            .status {
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            .status.enabled {
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+            .status.disabled {
+                background: #ffebee;
+                color: #c62828;
+            }
+            .btn {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                margin: 10px 0;
+                border: none;
+                border-radius: 25px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                text-align: center;
+                color: white;
+            }
+            .btn-primary {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            }
+            .btn-toggle {
+                background: #6c757d;
+            }
+            .btn-toggle.enable {
+                background: #4caf50;
+            }
+            .btn-toggle.disable {
+                background: #f44336;
+            }
+            .btn-toggle:hover {
+                transform: translateY(-2px);
+                opacity: 0.9;
+            }
+            .blocked-count {
+                text-align: center;
+                color: #666;
+                font-size: 14px;
+                margin-top: 10px;
+            }
+            .logo {
+                text-align: center;
+                margin-bottom: 15px;
+            }
+            .logo img {
+                width: 40px;
+                height: 40px;
+            }
+        </style>
+    </head>
     <body>
-        <p>Popup</p>
+        <div class="container">
+            <div class="logo">
+                <img src="tinyBlockerIcon.png" alt="Tiny Blocker">
+            </div>
+            <h3>Tiny Blocker</h3>
+
+            <div id="status" class="status">
+                Loading...
+            </div>
+
+            <button id="toggleBtn" class="btn btn-toggle">
+                Toggle Blocking
+            </button>
+
+            <a href="#" id="optionsBtn" class="btn btn-primary">
+                Manage Blocked Sites
+            </a>
+
+            <div id="blockedCount" class="blocked-count">
+
+            </div>
+        </div>
     </body>
-
-
-    <script src="alertScript.js"></script>
+    <script src="popup.js"></script>
 </html>

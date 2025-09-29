@@ -1,15 +1,33 @@
 {
     "name": "Tiny Blocker",
-    "version": "1.0",
+    "version": "2.0",
     "description": "A lightweight website blocker chrome extension",
-    "permissions": ["declarativeContent", "webRequestBlocking", "webRequest", "https://*.youtube.com/*"],
-    "page_action": {
-        "default_popup": "popup.html"
+    "permissions": [
+        "storage",
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "128": "tinyBlockerIcon.png"
+        }
     },
     "background": {
-        "scripts": ["blocker.js", "starting.js"],
-
-        "persistent": true
+        "service_worker": "service-worker.js"
     },
-    "manifest_version": 2
+    "options_page": "options.html",
+    "icons": {
+        "128": "tinyBlockerIcon.png"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": ["blocked.html", "blocked.js", "tinyBlockerIcon.png"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "manifest_version": 3
 }
