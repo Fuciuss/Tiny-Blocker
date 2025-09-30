@@ -12,7 +12,20 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadBlockedSites() {
     chrome.storage.sync.get(['blockedSites', 'masterBlockEnabled'], function(result) {
         if (result.blockedSites) {
-            blockedSites = result.blockedSites;
+            // Migrate old blockCount to blockLog
+            blockedSites = result.blockedSites.map(site => {
+                if (site.blockCount !== undefined && site.blockLog === undefined) {
+                    const { blockCount, ...rest } = site;
+                    return { ...rest, blockLog: [] };
+                } else if (site.blockLog === undefined) {
+                    return { ...site, blockLog: [] };
+                }
+                return site;
+            });
+            // Save migrated data
+            if (JSON.stringify(blockedSites) !== JSON.stringify(result.blockedSites)) {
+                saveBlockedSites();
+            }
         } else {
             // Initialize with empty array if no sites saved
             blockedSites = [];
@@ -91,7 +104,8 @@ function setupEventListeners() {
                 id: Date.now(),
                 name: name,
                 urls: urls,
-                enabled: true
+                enabled: true,
+                blockLog: []
             };
 
             blockedSites.push(newSite);
@@ -140,7 +154,8 @@ function addNewSite() {
         id: Date.now(),
         name: name,
         urls: [url],
-        enabled: true
+        enabled: true,
+        blockLog: []
     };
 
     blockedSites.push(newSite);
@@ -172,13 +187,17 @@ function renderSitesList() {
     blockedSites.forEach(site => {
         const siteElement = document.createElement('div');
         siteElement.className = 'site-item';
+        const blockCount = (site.blockLog && site.blockLog.length) || 0;
         siteElement.innerHTML = `
             <div class="d-flex justify-content-between align-items-center">
                 <div class="flex-grow-1">
                     <div class="site-url">${site.name}</div>
                     <small class="text-muted">${site.urls.join(', ')}</small>
+                    <br>
+                    <small class="text-muted"><strong>Blocked:</strong> ${blockCount} time${blockCount !== 1 ? 's' : ''}</small>
                 </div>
                 <div class="d-flex align-items-center">
+                    <button class="btn btn-sm btn-outline-secondary mr-2" data-site-id="${site.id}" style="padding: 5px 10px; font-size: 12px;" title="Reset counter" onclick="resetCounter(${site.id})">Reset</button>
                     <label class="toggle-switch mr-3">
                         <input type="checkbox" ${site.enabled ? 'checked' : ''} data-site-id="${site.id}">
                         <span class="slider"></span>
@@ -223,3 +242,16 @@ function updateMasterToggleUI() {
         container.classList.add('disabled');
     }
 }
+
+// Reset counter for a specific site
+function resetCounter(siteId) {
+    const site = blockedSites.find(s => s.id === siteId);
+    if (site) {
+        site.blockLog = [];
+        saveBlockedSites();
+        renderSitesList();
+    }
+}
+
+// Make resetCounter available globally for onclick handler
+window.resetCounter = resetCounter;

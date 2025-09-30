@@ -40,14 +40,34 @@ function updateUI() {
         toggleBtn.className = 'btn btn-toggle enable';
     }
 
-    // Update blocked sites count
+    // Update blocked sites count and statistics
     const activeCount = blockedSites.filter(site => site.enabled).length;
     const totalCount = blockedSites.length;
 
+    // Calculate total blocks from blockLog
+    const totalBlocks = blockedSites.reduce((sum, site) => {
+        return sum + ((site.blockLog && site.blockLog.length) || 0);
+    }, 0);
+
+    // Find most blocked site
+    const mostBlocked = blockedSites.reduce((max, site) => {
+        const count = (site.blockLog && site.blockLog.length) || 0;
+        const maxCount = (max.blockLog && max.blockLog.length) || 0;
+        return count > maxCount ? site : max;
+    }, {});
+
     if (totalCount === 0) {
-        blockedCountElement.textContent = 'No sites blocked';
+        blockedCountElement.innerHTML = 'No sites blocked';
     } else {
-        blockedCountElement.textContent = `Blocking ${activeCount} of ${totalCount} sites`;
+        let html = `Blocking ${activeCount} of ${totalCount} sites`;
+        html += `<br><strong>Total blocks: ${totalBlocks}</strong>`;
+
+        if (totalBlocks > 0 && mostBlocked.name) {
+            const mostBlockedCount = (mostBlocked.blockLog && mostBlocked.blockLog.length) || 0;
+            html += `<br><small>Most blocked: ${mostBlocked.name} (${mostBlockedCount}x)</small>`;
+        }
+
+        blockedCountElement.innerHTML = html;
     }
 }
 
@@ -60,7 +80,7 @@ function setupEventListeners() {
             chrome.runtime.sendMessage({
                 action: 'updateMasterToggle',
                 enabled: masterBlockEnabled
-            }, function(response) {
+            }, function() {
                 if (chrome.runtime.lastError) {
                     console.error('Error sending message:', chrome.runtime.lastError);
                 }

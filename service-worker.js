@@ -20,6 +20,21 @@ chrome.runtime.onInstalled.addListener(function(details) {
         });
     }
 
+    // Migrate existing sites to add blockLog if missing
+    if (details.reason === 'update') {
+        chrome.storage.sync.get(['blockedSites'], function(result) {
+            if (result.blockedSites && result.blockedSites.length > 0) {
+                const updated = result.blockedSites.map(site => {
+                    if (site.blockLog === undefined) {
+                        return { ...site, blockLog: [] };
+                    }
+                    return site;
+                });
+                chrome.storage.sync.set({ blockedSites: updated });
+            }
+        });
+    }
+
     // Load initial state and set up rules
     loadAndApplyRules();
 });
@@ -64,6 +79,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             sendResponse({ success: true });
         });
         return true; // Keep message channel open for async response
+    } else if (request.action === 'getBlockedUrl') {
+        // Return the blocked URL from the tab's navigation
+        sendResponse({ success: true });
+        return true;
     }
 });
 
@@ -139,7 +158,7 @@ async function updateBlockingRules() {
                         action: {
                             type: "redirect",
                             redirect: {
-                                extensionPath: "/blocked.html"
+                                extensionPath: `/blocked.html?site=${encodeURIComponent(site.name)}&id=${site.id}`
                             }
                         },
                         condition: {
@@ -158,7 +177,7 @@ async function updateBlockingRules() {
                             action: {
                                 type: "redirect",
                                 redirect: {
-                                    extensionPath: "/blocked.html"
+                                    extensionPath: `/blocked.html?site=${encodeURIComponent(site.name)}&id=${site.id}`
                                 }
                             },
                             condition: {
